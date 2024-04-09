@@ -1,0 +1,5 @@
+# bhyve
+	vm_enable="YES"
+	vm_dir="zfs:pfsense/vm"
+	vm_list="ubuntu"
+	vm_delay="5"
