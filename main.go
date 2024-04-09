@@ -19,8 +19,8 @@ var (
 )
 
 func init() {
-	flag.StringVar(&rc_conf_path, "rc_conf_path", "/etc/rc.conf.local", "rc conf path")
-	flag.StringVar(&vm_list_cmd, "vm_list_cmd", "vm list -v", "vm list cmd")
+	flag.StringVar(&rc_conf_path, "rc", "/etc/rc.conf.local", "rc conf path")
+	flag.StringVar(&vm_list_cmd, "vm", "/usr/local/sbin/vm list -v", "vm list cmd")
 }
 
 const (
@@ -39,6 +39,9 @@ const (
 
 func main() {
 	flag.Parse()
+
+	log.Printf("-rc %q", rc_conf_path)
+	log.Printf("-vm %q", vm_list_cmd)
 
 	watched := ScanRC()
 	log.Printf("watched vms: %q\n", watched)
@@ -79,8 +82,8 @@ func ScanVMS(
 	allrunning := true
 
 	// scanner := bufio.NewScanner(bytes.NewBuffer([]byte(vm_list)))
-
-	result, err := exec.Command(vm_list_cmd).CombinedOutput()
+	cmd := strings.Fields(vm_list_cmd)
+	result, err := exec.Command(cmd[0], cmd[1:]...).CombinedOutput()
 	if err != nil {
 		log.Fatalf("failed to execute vm list command: %q err: %q\n", vm_list_cmd, err)
 		return false
